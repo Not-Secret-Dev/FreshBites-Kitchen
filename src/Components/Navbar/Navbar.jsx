@@ -13,6 +13,7 @@ const NavbarComponent = styled.nav`
   position: sticky;
   top: 0;
   z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   #logo {
     display: flex;
@@ -26,6 +27,7 @@ const NavbarComponent = styled.nav`
       font-size: 1.5rem;
       font-weight: bold;
       color: #333;
+      transition: color 0.3s ease;
     }
 
     p:hover {
@@ -51,6 +53,7 @@ const NavbarComponent = styled.nav`
     font-size: 1rem;
     margin: 0 1rem;
     font-weight: 600;
+    transition: color 0.3s ease;
   }
 
   li:hover {
@@ -58,12 +61,12 @@ const NavbarComponent = styled.nav`
     cursor: pointer;
   }
 
-  .buttons {
+  .desktop-buttons {
     display: flex;
     gap: 1rem;
   }
 
-  .buttons button {
+  button {
     padding: 0.5rem 1rem;
     width: 130px;
     height: 40px;
@@ -74,13 +77,18 @@ const NavbarComponent = styled.nav`
     background-color: #4caf50;
     color: white;
     font-size: 0.8rem;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
   }
 
-  .buttons button#cartbtn {
+  button#cartbtn {
     width: 50px;
   }
 
-  .buttons button:hover {
+  button:hover {
     background-color: #45a049;
   }
 
@@ -88,6 +96,7 @@ const NavbarComponent = styled.nav`
     display: none;
     font-size: 1.8rem;
     cursor: pointer;
+    color: #333;
   }
 
   @media (max-width: 900px) {
@@ -97,6 +106,21 @@ const NavbarComponent = styled.nav`
 
     .hamburger {
       display: block;
+    }
+
+    .desktop-buttons {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    #logo p {
+      font-size: 1.2rem;
+    }
+    
+    img {
+      width: 40px !important;
+      height: 40px !important;
     }
   }
 `;
@@ -111,7 +135,7 @@ const MobileMenu = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 2rem;
+  padding-top: 4rem;
   z-index: 999;
   transform: ${({ isOpen }) =>
     isOpen ? "translateX(0)" : "translateX(-100%)"};
@@ -122,6 +146,8 @@ const MobileMenu = styled.div`
     flex-direction: column;
     align-items: center;
     width: 100%;
+    padding: 0;
+    margin: 2rem 0;
   }
 
   li {
@@ -129,10 +155,15 @@ const MobileMenu = styled.div`
     font-size: 1.2rem;
     list-style: none;
     font-weight: 600;
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem 0;
+    transition: all 0.3s ease;
   }
 
   li:hover {
     color: #378039;
+    background-color: rgba(55, 128, 57, 0.1);
     cursor: pointer;
   }
 
@@ -142,53 +173,43 @@ const MobileMenu = styled.div`
     right: 1rem;
     font-size: 2rem;
     cursor: pointer;
+    color: #333;
   }
 
-  .buttons {
+  .mobile-buttons {
     display: flex;
+    flex-direction: column;
     gap: 1rem;
-    margin-top: 2rem;
+    width: 80%;
+    margin-top: 1rem;
   }
 
-  .buttons button {
-    padding: 0.5rem 1rem;
-    width: 130px;
-    height: 40px;
-    font-weight: 600;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #4caf50;
-    color: white;
-    font-size: 0.8rem;
+  .mobile-buttons button {
+    padding: 0.8rem 1rem;
+    width: 100%;
+    height: 50px;
+    font-size: 1rem;
   }
 
-  .buttons button#cartbtn {
-    width: 50px;
-  }
-
-  .buttons button:hover {
-    background-color: #45a049;
+  .mobile-buttons button#cartbtn {
+    width: 100%;
   }
 `;
 
 const Navbar = () => {
-  const [loggedIn, setloggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 900);
-      // Close menu if switching to desktop view
       if (window.innerWidth > 900) {
         setMenuOpen(false);
       }
     };
 
-    // Set initial value
     handleResize();
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -205,36 +226,37 @@ const Navbar = () => {
       </div>
 
       <div className="right">
-        {/* Hamburger Icon */}
+        {/* Desktop Navigation */}
+        {!isMobile && (
+          <>
+            <ul>
+              <li>Home</li>
+              <li>Menu</li>
+              <li>How It Works</li>
+              <li>Nutrition Tips</li>
+              <li>About Us</li>
+              <li>Contact Us</li>
+            </ul>
+            <div className="desktop-buttons">
+              <button id="lsbtn">
+                {loggedIn ? <VscAccount size={18} /> : "Login / Sign up"}
+              </button>
+              <button id="cartbtn">
+                <FaShoppingCart size={16} />
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* Mobile Hamburger Icon */}
         {isMobile && (
           <div className="hamburger" onClick={toggleMenu}>
             <FiMenu />
           </div>
         )}
-
-        {/* Desktop Menu */}
-        {!isMobile && (
-          <ul>
-            <li>Home</li>
-            <li>Menu</li>
-            <li>How It Works</li>
-            <li>Nutrition Tips</li>
-            <li>About Us</li>
-            <li>Contact Us</li>
-          </ul>
-        )}
-
-        <div className="buttons">
-          <button id="lsbtn">
-            {loggedIn ? <VscAccount /> : "Login / Sign up"}
-          </button>
-          <button id="cartbtn">
-            <FaShoppingCart />
-          </button>
-        </div>
       </div>
 
-      {/* Mobile Menu - Only rendered when isMobile is true */}
+      {/* Mobile Menu */}
       {isMobile && (
         <MobileMenu isOpen={menuOpen}>
           <div className="close-icon" onClick={toggleMenu}>
@@ -248,12 +270,18 @@ const Navbar = () => {
             <li onClick={toggleMenu}>About Us</li>
             <li onClick={toggleMenu}>Contact Us</li>
           </ul>
-          <div className="buttons">
-            <button id="lsbtn">
-              {loggedIn ? <VscAccount /> : "Login / Sign up"}
+          <div className="mobile-buttons">
+            <button id="lsbtn" onClick={toggleMenu}>
+              {loggedIn ? (
+                <>
+                  <VscAccount size={18} /> My Account
+                </>
+              ) : (
+                "Login / Sign up"
+              )}
             </button>
-            <button id="cartbtn">
-              <FaShoppingCart />
+            <button id="cartbtn" onClick={toggleMenu}>
+              <FaShoppingCart size={16} /> Cart
             </button>
           </div>
         </MobileMenu>
