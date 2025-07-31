@@ -117,7 +117,7 @@ const NavbarComponent = styled.nav`
     #logo p {
       font-size: 1.2rem;
     }
-    
+
     img {
       width: 40px !important;
       height: 40px !important;
