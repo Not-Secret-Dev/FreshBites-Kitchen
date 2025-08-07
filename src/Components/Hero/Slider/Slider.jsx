@@ -1,10 +1,10 @@
+// Slider.js
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
 const HeroSlider = styled(motion.div)`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   height: 100%;
   width: 100%;
   flex-shrink: 0;
@@ -13,23 +13,52 @@ const HeroSlider = styled(motion.div)`
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 
+  @media (min-width: 1025px) {
+    flex-direction: row;
+  }
+
   .left {
-    width: 50%;
-    height: 100%;
+    width: 100%;
+    height: 60%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 4rem;
+    padding: 2rem;
+    order: 2;
+
+    @media (min-width: 1025px) {
+      width: 50%;
+      height: 100%;
+      padding: 4rem;
+      order: 1;
+    }
+
+    @media (max-width: 768px) {
+      height: 70%;
+      padding: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      padding: 1rem;
+    }
   }
 
   .right {
-    width: 50%;
-    height: 100%;
+    width: 100%;
+    height: 40%;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #f1f5f0;
-    padding: 2rem;
+    padding: 1rem;
+    order: 1;
+
+    @media (min-width: 1025px) {
+      width: 50%;
+      height: 100%;
+      padding: 2rem;
+      order: 2;
+    }
   }
 
   h1 {
@@ -38,6 +67,19 @@ const HeroSlider = styled(motion.div)`
     color: #2a7d4a;
     margin-bottom: 1.5rem;
     line-height: 1.2;
+
+    @media (max-width: 1024px) {
+      font-size: 2.2rem;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.5rem;
+    }
   }
 
   p {
@@ -46,12 +88,33 @@ const HeroSlider = styled(motion.div)`
     margin-bottom: 2.5rem;
     line-height: 1.6;
     max-width: 90%;
+
+    @media (max-width: 1024px) {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      max-width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.9rem;
+    }
   }
 
   .cta {
     display: flex;
     gap: 1.5rem;
     margin-top: 1rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+    }
   }
 
   .primary {
@@ -70,6 +133,11 @@ const HeroSlider = styled(motion.div)`
       background-color: #3a8d5a;
       transform: translateY(-2px);
     }
+
+    @media (max-width: 768px) {
+      width: 100%;
+      padding: 0.8rem;
+    }
   }
 
   .secondary {
@@ -87,14 +155,24 @@ const HeroSlider = styled(motion.div)`
       background-color: #f0f7f3;
       transform: translateY(-2px);
     }
+
+    @media (max-width: 768px) {
+      width: 100%;
+      padding: 0.8rem;
+    }
   }
 
   img {
     max-width: 100%;
-    max-height: 80%;
+    max-height: 100%;
     object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    pointer-events: none; /* Prevent image from capturing clicks */
+
+    @media (max-width: 1024px) {
+      max-height: 90%;
+    }
   }
 `;
 
@@ -106,6 +184,15 @@ const Slider = ({ headline, subline, imgSrc }) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
+      <section className="right">
+        <motion.img
+          src={imgSrc}
+          alt={headline}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        />
+      </section>
       <section className="left">
         <motion.h1
           initial={{ y: 20, opacity: 0 }}
@@ -127,18 +214,13 @@ const Slider = ({ headline, subline, imgSrc }) => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5 }}
         >
-          <button className="primary">View This Week's Menu</button>
-          <button className="secondary">Customize Your Plan</button>
+          <button className="primary" onClick={(e) => e.stopPropagation()}>
+            View This Week's Menu
+          </button>
+          <button className="secondary" onClick={(e) => e.stopPropagation()}>
+            Customize Your Plan
+          </button>
         </motion.div>
-      </section>
-      <section className="right">
-        <motion.img
-          src={imgSrc}
-          alt={headline}
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-        />
       </section>
     </HeroSlider>
   );

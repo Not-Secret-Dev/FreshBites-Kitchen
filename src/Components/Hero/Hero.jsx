@@ -1,14 +1,32 @@
 // Hero.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import SliderItems from "./Slider/SliderItems";
+import Slider from "./Slider/Slider";
 
 const HeroContainer = styled.section`
-  height: 89vh;
+  height: 100vh;
+  max-height: 900px;
+  min-height: 600px;
   width: 100%;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 1024px) {
+    height: 80vh;
+    min-height: 500px;
+  }
+
+  @media (max-width: 768px) {
+    height: 70vh;
+    min-height: 400px;
+  }
+
+  @media (max-width: 480px) {
+    height: 60vh;
+    min-height: 300px;
+  }
 `;
 
 const SliderWrapper = styled.div`
@@ -21,49 +39,16 @@ const SliderWrapper = styled.div`
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 `;
 
-const Slide = styled(motion.div)`
+const SlideContainer = styled.div`
   width: ${(props) => 100 / props.$slideCount}%;
   height: 100%;
-  display: flex;
-  background: linear-gradient(to right, #f8f8f8 50%, #ffffff 50%);
-  padding: 0 5%;
-`;
+  flex-shrink: 0;
+  padding: 0 20px;
+  box-sizing: border-box;
 
-const ContentWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  max-width: 1200px;
-  height: 100%;
-  margin: 0 auto;
-`;
-
-const TextContent = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding-right: 2rem;
-`;
-
-const Headline = styled(motion.h1)`
-  font-size: 3rem;
-  font-weight: 700;
-  color: #2e8b57;
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
-`;
-
-const Subline = styled(motion.p)`
-  font-size: 1.25rem;
-  color: #333;
-  margin-bottom: 2.5rem;
-  max-width: 500px;
-`;
-
-const ButtonGroup = styled(motion.div)`
-  display: flex;
-  gap: 1rem;
+  @media (max-width: 768px) {
+    padding: 0;
+  }
 `;
 
 const NavButton = styled.button`
@@ -83,17 +68,27 @@ const NavButton = styled.button`
   font-size: 1.5rem;
   color: #2e8b57;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 
   &:hover {
     background: white;
+    transform: translateY(-50%) scale(1.1);
   }
 
   &.prev {
     left: 20px;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 
   &.next {
     right: 20px;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 `;
 
@@ -105,6 +100,11 @@ const DotsContainer = styled.div`
   display: flex;
   gap: 10px;
   z-index: 10;
+
+  @media (max-width: 480px) {
+    bottom: 20px;
+    gap: 8px;
+  }
 `;
 
 const Dot = styled.div`
@@ -118,11 +118,19 @@ const Dot = styled.div`
 
   &:hover {
     background: #2e8b57;
+    transform: scale(1.2);
+  }
+
+  @media (max-width: 480px) {
+    width: 10px;
+    height: 10px;
   }
 `;
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev === SliderItems.length - 1 ? 0 : prev + 1));
@@ -132,50 +140,51 @@ const Hero = () => {
     setCurrentSlide((prev) => (prev === 0 ? SliderItems.length - 1 : prev - 1));
   };
 
+  // Auto-rotate slides every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [currentSlide]);
+
+  // Touch event handlers for mobile swipe
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStart - touchEnd > 50) {
+      nextSlide();
+    }
+
+    if (touchStart - touchEnd < -50) {
+      prevSlide();
+    }
+  };
+
   return (
-    <HeroContainer>
+    <HeroContainer
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <SliderWrapper
         $currentSlide={currentSlide}
         $slideCount={SliderItems.length}
       >
         {SliderItems.map((item) => (
-          <Slide key={item.id} $slideCount={SliderItems.length}>
-            <ContentWrapper>
-              <TextContent>
-                <Headline
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  {item.headline}
-                </Headline>
-                <Subline
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                >
-                  {item.subline}
-                </Subline>
-                <ButtonGroup
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                >
-                  <button className="primary">View This Week's Menu</button>
-                  <button className="secondary">Customize Your Plan</button>
-                </ButtonGroup>
-              </TextContent>
-              <div className="image-container">
-                <motion.img
-                  src={item.imgSrc}
-                  alt={item.headline}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                />
-              </div>
-            </ContentWrapper>
-          </Slide>
+          <SlideContainer key={item.id} $slideCount={SliderItems.length}>
+            <Slider
+              headline={item.headline}
+              subline={item.subline}
+              imgSrc={item.imgSrc}
+            />
+          </SlideContainer>
         ))}
       </SliderWrapper>
 
@@ -189,7 +198,7 @@ const Hero = () => {
       <DotsContainer>
         {SliderItems.map((item, index) => (
           <Dot
-            key={item.id} // Use the same unique id here
+            key={item.id}
             $active={index === currentSlide}
             onClick={() => setCurrentSlide(index)}
           />
