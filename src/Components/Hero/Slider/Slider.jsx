@@ -1,17 +1,16 @@
-// Slider.js
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
 const HeroSlider = styled(motion.div)`
   display: flex;
   flex-direction: column;
+  margin: center;
   height: 100%;
   width: 100%;
   flex-shrink: 0;
   background: #f8faf7;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 
   @media (min-width: 1025px) {
     flex-direction: row;
@@ -49,7 +48,6 @@ const HeroSlider = styled(motion.div)`
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f1f5f0;
     padding: 1rem;
     order: 1;
 
@@ -127,7 +125,6 @@ const HeroSlider = styled(motion.div)`
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(42, 125, 74, 0.2);
 
     &:hover {
       background-color: #3a8d5a;
@@ -167,8 +164,7 @@ const HeroSlider = styled(motion.div)`
     max-height: 100%;
     object-fit: contain;
     border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    pointer-events: none; /* Prevent image from capturing clicks */
+    pointer-events: none;
 
     @media (max-width: 1024px) {
       max-height: 90%;

@@ -76,7 +76,7 @@ const NavbarComponent = styled.nav`
     cursor: pointer;
     background-color: #4caf50;
     color: white;
-    font-size: 0.8rem;
+    font-size: 1rem;
     transition: background-color 0.3s ease;
     display: flex;
     align-items: center;
@@ -110,6 +110,27 @@ const NavbarComponent = styled.nav`
 
     .desktop-buttons {
       display: none;
+    }
+  }
+
+  @media (max-width: 1190px) {
+    #logo p {
+      font-size: 1.2rem;
+    }
+
+    img {
+      width: 40px !important;
+      height: 40px !important;
+    }
+
+    li {
+      font-size: 14px;
+    }
+
+    button {
+      width: 100px;
+      height: 30px;
+      font-size: 14px;
     }
   }
 
@@ -239,7 +260,7 @@ const Navbar = () => {
             </ul>
             <div className="desktop-buttons">
               <button id="lsbtn">
-                {loggedIn ? <VscAccount size={18} /> : "Login / Sign up"}
+                {loggedIn ? <VscAccount size={18} /> : "Login"}
               </button>
               <button id="cartbtn">
                 <FaShoppingCart size={16} />
@@ -277,7 +298,7 @@ const Navbar = () => {
                   <VscAccount size={18} /> My Account
                 </>
               ) : (
-                "Login / Sign up"
+                "Login"
               )}
             </button>
             <button id="cartbtn" onClick={toggleMenu}>
